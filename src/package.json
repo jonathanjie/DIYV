@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "bunyan": "^1.8.12",
     "express": "^4.17.1"
   }
 }
