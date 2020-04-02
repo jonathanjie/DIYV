@@ -1,6 +1,6 @@
 const BodyParser = require("body-parser");
 const Express = require("express");
-const Fetch = require("fetch");
+const Fetch = require("node-fetch");
 
 const API_SECRET = "02736cd0-74ab-11ea-8ff8-bd9ee0e87500";
 const PSEMILLA_PLUGINAPI_URL = "https://8ylht4he11.execute-api.ap-southeast-1.amazonaws.com/aspen-kiwi";
