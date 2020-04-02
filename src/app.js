@@ -1,6 +1,10 @@
+const BodyParser = require("body-parser");
 const Express = require("express");
 
 const app = Express();
+app.use(BodyParser.urlencoded({ extended: false }));
+app.use(BodyParser.json());
+
 const port = 3000;
 
 app.get('/', (req, res) => res.send('Hello World!'))
