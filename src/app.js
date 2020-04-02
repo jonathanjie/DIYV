@@ -1,7 +1,5 @@
 const Express = require("express");
 
-const log = Bunyan.createLogger({ name : "diyv-rest-psemillawebhook" });
-
 const app = Express();
 const port = 3000;
 
