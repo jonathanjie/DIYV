@@ -22,3 +22,7 @@ RUN mkdir /opt/projects
 WORKDIR /opt/projects
 
 COPY src diyv-rest-psemillawebhook
+WORKDIR /opt/projects/diyv-rest-psemillawebhook
+
+RUN yarn install
+COMMAND node app
