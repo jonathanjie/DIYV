@@ -42,7 +42,8 @@ app.post('/listen', authorizer, async (req, res) => {
             'Content-Type': 'application/json'
         },
         body : JSON.stringify({
-            channel, customer,
+            channel, 
+            customer : customer.uuid,
             service : service.permlink,
             apiKey : PSEMILLA_API_KEY, 
             apiSecret : PSEMILLA_API_SECRET,
