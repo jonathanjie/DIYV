@@ -24,5 +24,5 @@ WORKDIR /opt/projects
 COPY src diyv-rest-psemillawebhook
 WORKDIR /opt/projects/diyv-rest-psemillawebhook
 
-RUN yarn install
+RUN npm install
 CMD node app
