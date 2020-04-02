@@ -9,7 +9,7 @@ const port = 3000;
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
-app.get('/listen', (req, res) => {
+app.post('/listen', (req, res) => {
     console.log("BODY", req.body);
     res.send('Hello World!'); 
 });
