@@ -25,4 +25,4 @@ COPY src diyv-rest-psemillawebhook
 WORKDIR /opt/projects/diyv-rest-psemillawebhook
 
 RUN yarn install
-COMMAND node app
+CMD node app
