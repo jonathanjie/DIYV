@@ -84,10 +84,18 @@ app.get('/', (req, res) => res.send('Hello from DIYV!'))
 app.post('/listen', authorizer, async (req, res) => {
     console.log("BODY", req.body);
     
-    let { service, customer, channel } = req.body;
+    let { service, customer, channel, message, messageType } = req.body;
     
-    let sendResult = await sendRootResponse(service, customer, channel);
-    console.log("REPLYING:::", sendResult);    
+    if(messageType == "CBQ" && message.startsWith("CMD:DIYV:")) {
+        let id = message.replace("CMD:DIYV:", "");
+        let botMessages = getBotMessages();
+        
+        console.log(botMessages[id]);
+    } else {
+        let sendResult = await sendRootResponse(service, customer, channel);
+        console.log("REPLYING:::", sendResult);    
+    }
+    
     res.send('Ok'); 
 });
 
