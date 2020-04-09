@@ -156,6 +156,17 @@ let sendCBQ = (service, customer, channel, id) => {
                     url
                 };
             });
+            
+            buttons.push({
+                text : "⬅️ Back",
+                callback_data : `CMD:DIYV:${botMessage.prevId}`
+            });
+            
+            let rootBot = await getRootBot();
+            buttons.push({
+                text : "🏠️ Home",
+                callback_data : `CMD:DIYV:${rootBot.id}`
+            });
     
             let reply = {
                 channel, 
