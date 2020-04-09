@@ -93,34 +93,39 @@ app.post('/listen', authorizer, async (req, res) => {
 
 let sendRootResponse = (service, customer, channel) => {
     return Promise(async (resolve, reject) => {
-        let rootBot = await getRootBot();
-
-        let buttons = rootBot.buttons.map(({ id, label }) => {
-            return {
-                text : label,
-                callback_data : `CMD:DIYV:${id}`
-            };
-        });
-
-        let sendResult = await Fetch(`${PSEMILLA_PLUGINAPI_URL}/send`, {
-            method : "POST",
-            headers : {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body : JSON.stringify({
-                channel, 
-                customer : customer.uuid,
-                service : service.permlink,
-                apiKey : PSEMILLA_API_KEY, 
-                apiSecret : PSEMILLA_API_SECRET,
-                message : rootBot.messageText,
-                options : buttons,
-                chunk : 1
-            })
-        }).then(res => res.json());    
-        
-        resolve(sendResult);
+        try {
+            let rootBot = await getRootBot();
+    
+            let buttons = rootBot.buttons.map(({ id, label }) => {
+                return {
+                    text : label,
+                    callback_data : `CMD:DIYV:${id}`
+                };
+            });
+    
+            let sendResult = await Fetch(`${PSEMILLA_PLUGINAPI_URL}/send`, {
+                method : "POST",
+                headers : {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body : JSON.stringify({
+                    channel, 
+                    customer : customer.uuid,
+                    service : service.permlink,
+                    apiKey : PSEMILLA_API_KEY, 
+                    apiSecret : PSEMILLA_API_SECRET,
+                    message : rootBot.messageText,
+                    options : buttons,
+                    chunk : 1
+                })
+            }).then(res => res.json());    
+            
+            resolve(sendResult);
+        } catch(error) {
+            console.error("ERRRRRORRRRRR:::", error);
+            reject(error);
+        }
     });
 };
 
