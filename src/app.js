@@ -1,6 +1,7 @@
 const BodyParser = require("body-parser");
 const Express = require("express");
 const Fetch = require("node-fetch");
+const FS = require("fs");
 
 const API_SECRET = "02736cd0-74ab-11ea-8ff8-bd9ee0e87500";
 const PSEMILLA_PLUGINAPI_URL = "https://8ylht4he11.execute-api.ap-southeast-1.amazonaws.com/aspen-kiwi";
@@ -12,6 +13,43 @@ app.use(BodyParser.urlencoded({ extended: false }));
 app.use(BodyParser.json());
 
 const port = 3000;
+
+let _bot;
+
+let getBotMessages = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let rawdata = FS.readFileSync('./resources/bot_messages.json');
+            let json = JSON.parse(rawdata);
+            // let json = await Fetch('https://postgrest.pandemy.xyz/bot_messages').then(res => res.json());
+            
+            _bot = {};
+    
+            for(let { 
+                id, prev_bot_message_id, message_text, button_text, 
+                created_on, modified_on, disabled_on, prev_bot_message_text, 
+                button_link, message_photo_link
+            } of json) {
+                _bot[id] = {
+                    messageText : message_text,
+                    buttons : json.filter(subMesg => subMesg.prev_bot_message_id == id).map(({ id, button_text }) => {
+                        return {
+                            id,
+                            label : button_text
+                        }
+                    })
+                };
+            }
+            
+            resolve(_bot);
+        } catch(error) {
+            console.error("GET BOT MESSAGES ERROR", error);
+            reject(error);
+        }
+    });
+    
+    
+}
 
 let authorizer = async (req, res, next) => {
     try {
@@ -32,6 +70,10 @@ app.get('/', (req, res) => res.send('Hello from DIYV!'))
 
 app.post('/listen', authorizer, async (req, res) => {
     console.log("BODY", req.body);
+    
+    let botMessages = await getBotMessages();
+    
+    console.log("BOT MESSAGES ################", botMessages);
     
     let { service, customer, channel } = req.body;
     
