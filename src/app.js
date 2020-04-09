@@ -33,10 +33,13 @@ let getBotMessages = () => {
             } of json) {
                 _bot[id] = {
                     messageText : message_text,
-                    buttons : json.filter(subMesg => subMesg.prev_bot_message_id == id).map(({ id, button_text }) => {
+                    prevId : prev_bot_message_id,
+                    photo : message_photo_link,
+                    buttons : json.filter(subMesg => subMesg.prev_bot_message_id == id).map(({ id, button_text, button_link }) => {
                         return {
                             id,
-                            label : button_text
+                            label : button_text,
+                            url : button_link
                         }
                     })
                 };
@@ -146,12 +149,25 @@ let sendCBQ = (service, customer, channel, id) => {
                 return resolve({});
             }
             
-            let buttons = botMessage.buttons.map(({ id, label }) => {
+            let buttons = botMessage.buttons.map(({ id, label, url }) => {
                 return {
                     text : label,
-                    callback_data : `CMD:DIYV:${id}`
+                    callback_data : url ? null : `CMD:DIYV:${id}`,
+                    url
                 };
             });
+    
+            let reply = {
+                channel, 
+                customer : customer.uuid,
+                service : service.permlink,
+                apiKey : PSEMILLA_API_KEY, 
+                apiSecret : PSEMILLA_API_SECRET,
+                message : botMessage.messageText,
+                photo : botMessage.photo,
+                options : buttons,
+                chunk : 1
+            };
     
             let sendResult = await Fetch(`${PSEMILLA_PLUGINAPI_URL}/send`, {
                 method : "POST",
@@ -159,16 +175,7 @@ let sendCBQ = (service, customer, channel, id) => {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body : JSON.stringify({
-                    channel, 
-                    customer : customer.uuid,
-                    service : service.permlink,
-                    apiKey : PSEMILLA_API_KEY, 
-                    apiSecret : PSEMILLA_API_SECRET,
-                    message : botMessage.messageText,
-                    options : buttons,
-                    chunk : 1
-                })
+                body : JSON.stringify(reply)
             }).then(res => res.json());    
             
             resolve(sendResult);
