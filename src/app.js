@@ -86,7 +86,7 @@ app.post('/listen', authorizer, async (req, res) => {
     
     let rootBot = await getRootBot();
     
-    console.log("BOT MESSAGES ################", botMessages);
+    console.log("BOT MESSAGES ################", rootBot/*botMessages*/);
     
     let { service, customer, channel } = req.body;
     
