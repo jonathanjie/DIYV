@@ -87,7 +87,7 @@ app.post('/listen', authorizer, async (req, res) => {
     
     if(messageType == "CBQ" && message.startsWith("CMD:DIYV:")) {
         let id = message.replace("CMD:DIYV:", "");
-        let botMessages = getBotMessages();
+        let botMessages = await getBotMessages();
         
         console.log("THE ID:::", id, botMessages[id]);
         
