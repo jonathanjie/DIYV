@@ -165,7 +165,7 @@ let sendCBQ = (service, customer, channel, id) => {
                     service : service.permlink,
                     apiKey : PSEMILLA_API_KEY, 
                     apiSecret : PSEMILLA_API_SECRET,
-                    message : botMessages.messageText,
+                    message : botMessage.messageText,
                     options : buttons,
                     chunk : 1
                 })
