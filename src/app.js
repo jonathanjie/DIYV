@@ -88,8 +88,10 @@ app.post('/listen', authorizer, async (req, res) => {
     console.log("BODY", req.body);
     
     let { service, customer, channel, message, messageType } = req.body;
+
+    let rootBot = await getRootBot();
     
-    if(messageType == "CBQ" && message.startsWith("CMD:DIYV:")) {
+    if(messageType == "CBQ" && message.startsWith("CMD:DIYV:") && !message.startsWith(`CMD:DIYV:${rootBot.id}`)) {
         let id = message.replace("CMD:DIYV:", "");
         let sendResult = await sendCBQ(service, customer, channel, id);
         console.log("REPLYING:::", sendResult);    
