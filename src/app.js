@@ -15,6 +15,7 @@ app.use(BodyParser.json());
 const port = 3000;
 
 let _bot;
+let _rootBot;
 
 let getBotMessages = () => {
     return new Promise(async (resolve, reject) => {
@@ -39,6 +40,10 @@ let getBotMessages = () => {
                         }
                     })
                 };
+                
+                if(!prev_bot_message_id) {
+                    _rootBot = _bot[id];
+                }
             }
             
             resolve(_bot);
@@ -47,8 +52,16 @@ let getBotMessages = () => {
             reject(error);
         }
     });
+}
+
+let getRootBot = () => {
+    if(_rootBot) {
+        return _rootBot;
+    }
     
-    
+    return getBotMessages().then(new Promise((resolve, reject) => {
+        resolve(_rootBot);
+    }));
 }
 
 let authorizer = async (req, res, next) => {
@@ -71,11 +84,19 @@ app.get('/', (req, res) => res.send('Hello from DIYV!'))
 app.post('/listen', authorizer, async (req, res) => {
     console.log("BODY", req.body);
     
-    let botMessages = await getBotMessages();
+    let rootBot = await getRootBot();
     
     console.log("BOT MESSAGES ################", botMessages);
     
     let { service, customer, channel } = req.body;
+    
+    let buttons = rootBot.buttons.map(({ id, label }) => {
+        return {
+            text : label,
+            callback_data : `CMD:DIYV:${id}`
+        };
+    });
+    
     
     let sendResult = await Fetch(`${PSEMILLA_PLUGINAPI_URL}/send`, {
         method : "POST",
@@ -89,7 +110,8 @@ app.post('/listen', authorizer, async (req, res) => {
             service : service.permlink,
             apiKey : PSEMILLA_API_KEY, 
             apiSecret : PSEMILLA_API_SECRET,
-            message : "JUST RECEIVED FROM YOU"
+            message : rootBot.messageText,
+            options : buttons
         })
     }).then(res => res.json());    
     
