@@ -55,14 +55,13 @@ let getBotMessages = () => {
 }
 
 let getRootBot = () => {
-    if(_rootBot) {
-        return _rootBot;
-    }
-    
-    return getBotMessages().then(new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+        if(!_rootBot) {
+            await getBotMessages();
+        }
         resolve(_rootBot);
-    }));
-}
+    });
+};
 
 let authorizer = async (req, res, next) => {
     try {
