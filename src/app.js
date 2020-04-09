@@ -32,6 +32,7 @@ let getBotMessages = () => {
                 button_link, message_photo_link
             } of json) {
                 _bot[id] = {
+                    id,
                     messageText : message_text,
                     prevId : prev_bot_message_id,
                     photo : message_photo_link,
