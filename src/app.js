@@ -92,7 +92,7 @@ app.post('/listen', authorizer, async (req, res) => {
 });
 
 let sendRootResponse = (service, customer, channel) => {
-    return Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             let rootBot = await getRootBot();
     
