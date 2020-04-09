@@ -86,15 +86,15 @@ app.post('/listen', authorizer, async (req, res) => {
     
     let { service, customer, channel } = req.body;
     
-    sendRootResponse(service, customer, channel);
+    let sendResult = await sendRootResponse(service, customer, channel);
+    
+    console.log("SENDING RESULT::::", sendResult);
     
     res.send('Ok'); 
 });
 
 let sendRootResponse = (service, customer, channel) => {
-    return Promise(async (resolve, reject) => {
-        let rootBot = await getRootBot();
-
+    return getRootBot().then((rootBot) => {
         let buttons = rootBot.buttons.map(({ id, label }) => {
             return {
                 text : label,
@@ -102,7 +102,7 @@ let sendRootResponse = (service, customer, channel) => {
             };
         });
 
-        let sendResult = await Fetch(`${PSEMILLA_PLUGINAPI_URL}/send`, {
+        return Fetch(`${PSEMILLA_PLUGINAPI_URL}/send`, {
             method : "POST",
             headers : {
                 'Accept': 'application/json',
@@ -118,11 +118,8 @@ let sendRootResponse = (service, customer, channel) => {
                 options : buttons,
                 chunk : 1
             })
-        }).then(res => res.json());    
-        
-        console.log("REPLYING:::", sendResult);
-            
-    });
+        }); 
+    }).then(res => res.json());
 };
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
