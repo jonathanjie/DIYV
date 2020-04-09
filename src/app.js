@@ -87,13 +87,8 @@ app.post('/listen', authorizer, async (req, res) => {
     
     if(messageType == "CBQ" && message.startsWith("CMD:DIYV:")) {
         let id = message.replace("CMD:DIYV:", "");
-        let botMessages = await getBotMessages();
-        
-        console.log("THE ID:::", id, botMessages[id]);
-        
-        if(!botMessages[id]) {
-            console.log("=======", botMessages);
-        }
+        let sendResult = await sendCBQ(service, customer, channel, id);
+        console.log("REPLYING:::", sendResult);    
     } else {
         let sendResult = await sendRootResponse(service, customer, channel);
         console.log("REPLYING:::", sendResult);    
@@ -127,6 +122,50 @@ let sendRootResponse = (service, customer, channel) => {
                     apiKey : PSEMILLA_API_KEY, 
                     apiSecret : PSEMILLA_API_SECRET,
                     message : rootBot.messageText,
+                    options : buttons,
+                    chunk : 1
+                })
+            }).then(res => res.json());    
+            
+            resolve(sendResult);
+        } catch(error) {
+            console.error("ERRRRRORRRRRR:::", error);
+            reject(error);
+        }
+    });
+};
+
+let sendCBQ = (service, customer, channel, id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let botMessages = await getBotMessages();
+            let botMessage = botMessages[id];
+            
+            if(!botMessage) {
+                console.error("INVALID ID");
+                return resolve({});
+            }
+            
+            let buttons = botMessage.buttons.map(({ id, label }) => {
+                return {
+                    text : label,
+                    callback_data : `CMD:DIYV:${id}`
+                };
+            });
+    
+            let sendResult = await Fetch(`${PSEMILLA_PLUGINAPI_URL}/send`, {
+                method : "POST",
+                headers : {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body : JSON.stringify({
+                    channel, 
+                    customer : customer.uuid,
+                    service : service.permlink,
+                    apiKey : PSEMILLA_API_KEY, 
+                    apiSecret : PSEMILLA_API_SECRET,
+                    message : botMessages.messageText,
                     options : buttons,
                     chunk : 1
                 })
