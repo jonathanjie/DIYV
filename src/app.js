@@ -90,7 +90,11 @@ app.post('/listen', authorizer, async (req, res) => {
         let id = message.replace("CMD:DIYV:", "");
         let botMessages = getBotMessages();
         
-        console.log(botMessages[id]);
+        console.log("THE ID:::", id, botMessages[id]);
+        
+        if(!botMessages[id]) {
+            console.log("=======", botMessages);
+        }
     } else {
         let sendResult = await sendRootResponse(service, customer, channel);
         console.log("REPLYING:::", sendResult);    
