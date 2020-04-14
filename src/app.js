@@ -4,7 +4,7 @@ const Fetch = require("node-fetch");
 const FS = require("fs");
 
 const API_SECRET = "02736cd0-74ab-11ea-8ff8-bd9ee0e87500";
-const PSEMILLA_PLUGINAPI_URL = "https://8ylht4he11.execute-api.ap-southeast-1.amazonaws.com/aspen-kiwi";
+const PSEMILLA_PLUGINAPI_URL = "https://4rtx6enzla.execute-api.eu-central-1.amazonaws.com/bamboo-date";
 const PSEMILLA_API_KEY = "1499f76d-8d7e-5b2f-83a7-4acdfb4d31e9";
 const PSEMILLA_API_SECRET = "960ebdda-1fe2-5c01-aaa2-11ef69e00400";
 
